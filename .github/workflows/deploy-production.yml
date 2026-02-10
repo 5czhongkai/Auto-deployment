@@ -1,0 +1,25 @@
+name: Deploy to Production
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/5czhongkai/auto-deployment:${{ github.event.release.tag_name }} .
+          docker tag ghcr.io/5czhongkai/auto-deployment:${{ github.event.release.tag_name }} ghcr.io/5czhongkai/auto-deployment:latest
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker push ghcr.io/5czhongkai/auto-deployment:${{ github.event.release.tag_name }}
+          docker push ghcr.io/5czhongkai/auto-deployment:latest
+      
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production..."
+          # Blue-green deployment commands here
