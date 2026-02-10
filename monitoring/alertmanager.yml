@@ -1,0 +1,20 @@
+global:
+  smtp_smarthost: "localhost:587"
+  smtp_from: "alerts@example.com"
+
+route:
+  receiver: "default"
+  group_by: ["alertname"]
+
+receivers:
+  - name: "default"
+    slack_configs:
+      - channel: "#alerts"
+        send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: "critical"
+    target_match:
+      severity: "warning"
+    equal: ["alertname"]
