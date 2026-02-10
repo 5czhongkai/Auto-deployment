@@ -1,0 +1,23 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/5czhongkai/auto-deployment:staging .
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker push ghcr.io/5czhongkai/auto-deployment:staging
+      
+      - name: Deploy to staging server
+        run: |
+          echo "Deploying to staging..."
+          # SSH deployment commands here
