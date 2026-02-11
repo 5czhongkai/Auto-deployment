@@ -3,4 +3,13 @@ module.exports = {
   testEnvironment: "node",
   roots: ["<rootDir>/src", "<rootDir>/tests"],
   testMatch: ["**/*.test.ts"],
+  transform: {
+    "^.+\.ts$": "ts-jest"
+  },
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/**/*.d.ts"
+  ],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"]
 };
